@@ -1,5 +1,5 @@
-<x-app-layout>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+<x-guest-layout>
+        <div class="flex items-center justify-center bg-gray-100">
         <div class="p-8 space-y-6 bg-white rounded-lg shadow-md w-96">
             <h2 class="text-2xl font-bold text-center text-gray-700">Escolha o Tipo de Usuário</h2>
             <div class="space-y-4">
@@ -18,4 +18,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-guest-layout>

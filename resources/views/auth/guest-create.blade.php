@@ -1,5 +1,5 @@
-<x-app-layout>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+<x-guest-layout>
+        <div class="flex items-center justify-center bg-gray-100">
         <div class="p-8 space-y-6 bg-white rounded-lg shadow-md w-96">
             <h2 class="text-2xl font-bold text-center text-gray-700">Página do Convidado</h2>
             <p class="text-center text-gray-600">Bem-vindo à página exclusiva para convidados!</p>
@@ -15,4 +15,8 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+    <p class="mt-4 text-sm text-center text-gray-600">
+         Não tem uma conta?
+        <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Registre-se</a>
+    </p>
+</x-guest-layout>
