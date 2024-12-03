@@ -19,7 +19,7 @@
     </div>
 
     <!-- Pop-up padrão (Irmão do Quadro e Visitante) -->
-    <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <!-- <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
             <input id="brotherSimInput" type="text" placeholder="Número SIM"
@@ -35,7 +35,32 @@
                 </button>
             </div>
         </div>
+    </div> -->
+
+    <!-- campos para exibir os dados -->
+    <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
+            <input id="brotherSimInput" type="text" placeholder="Número SIM"
+                class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                onblur="fetchBrotherData()">
+            <div id="brotherInfo" class="mt-4">
+                <p id="brotherName"></p>
+                <p id="brotherPosition"></p>
+            </div>
+            <div class="mt-4 flex justify-end space-x-4">
+                <button onclick="closePopup('brother')"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    Cancelar
+                </button>
+                <button onclick="registerPresence('brother')"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+                    Registrar Presença
+                </button>
+            </div>
+        </div>
     </div>
+
 
     <div id="visitor-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -82,8 +107,155 @@
             </form>
         </div>
     </div>
-
+    
     <script>
+        function openPopup(type) {
+            document.getElementById(`${type}-popup`).classList.remove('hidden');
+        }
+
+        function closePopup(type) {
+            document.getElementById(`${type}-popup`).classList.add('hidden');
+        }
+
+        // Registrar presença (usando apenas uma função para irmãos e visitantes)
+        async function registerPresence(type) {
+            const simInput = document.getElementById(`${type}SimInput`).value;
+
+            if (!simInput) {
+                alert('Por favor, insira o número SIM.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/register-presence', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sim: simInput, type: type })  // Adiciona o tipo para diferenciar irmão do quadro e visitante
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    closePopup(type);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao registrar presença:', error);
+                alert('Erro ao registrar presença.');
+            }
+        }
+
+        // Buscar dados do irmão do quadro
+        async function fetchBrotherData() {
+            const sim = document.getElementById('brotherSimInput').value;
+
+            if (!sim) {
+                alert('Por favor, insira o número SIM.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/brother-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sim })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const brotherData = result.data;
+                    document.getElementById('brotherName').textContent = `Nome: ${brotherData.name}`;
+                    document.getElementById('brotherPosition').textContent = `Cargo: ${brotherData.position}`;
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar os dados:', error);
+                alert('Erro ao buscar os dados.');
+            }
+        }
+
+        // Verificar e cadastrar visitante
+        async function verifyVisitor() {
+            const sim = document.getElementById('visitorSimInput').value;
+
+            if (!sim) {
+                alert('Por favor, insira o número SIM.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/verify-visitor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sim })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Visitante encontrado! Exibindo dados...');
+                    closePopup('visitor');
+                } else {
+                    alert('Visitante não cadastrado. Use a opção "Cadastrar Visitante".');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar visitante:', error);
+                alert('Erro ao verificar visitante.');
+            }
+        }
+
+        // Cadastrar visitante
+        async function registerVisitor(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById('registerForm'));
+            const name = formData.get('name');
+            const sim = formData.get('sim');
+
+            if (!name || !sim) {
+                alert('Preencha todos os campos.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/register-visitor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ name, sim })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Visitante ${name} com SIM ${sim} cadastrado com sucesso!`);
+                    closePopup('register');
+                } else {
+                    alert('Erro ao cadastrar visitante.');
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar visitante:', error);
+                alert('Erro ao cadastrar visitante.');
+            }
+        }
+    </script>
+
+
+    <!-- <script>
         function openPopup(type) {
             document.getElementById(`${type}-popup`).classList.remove('hidden');
         }
@@ -132,5 +304,73 @@
             alert(`Visitante ${name} com SIM ${sim} cadastrado com sucesso!`);
             closePopup('register');
         }
-    </script>
+
+        //adicione um evento para buscar os dados ao digitar o número SIM
+        async function fetchBrotherData() {
+            const sim = document.getElementById('brotherSimInput').value;
+
+            if (!sim) {
+                alert('Por favor, insira o número SIM.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/brother-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sim })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Exiba os dados do irmão no pop-up
+                    const brotherData = result.data;
+                    document.getElementById('brotherName').textContent = `Nome: ${brotherData.name}`;
+                    document.getElementById('brotherPosition').textContent = `Cargo: ${brotherData.position}`;
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar os dados:', error);
+                alert('Erro ao buscar os dados.');
+            }
+        }
+        // registrar presença
+        async function registerPresence() {
+            const sim = document.getElementById('brotherSimInput').value;
+
+            if (!sim) {
+                alert('Por favor, insira o número SIM.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/register-presence', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sim })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    closePopup('brother');
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao registrar presença:', error);
+                alert('Erro ao registrar presença.');
+            }
+        }
+
+    </script> -->
 </x-guest-layout>

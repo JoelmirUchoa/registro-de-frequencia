@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GuestController;
-use App\Http\Controllers\BrotherController; //rota para buscar os dados pelo número SIM
+use App\Http\Controllers\Controller; //rota para buscar os dados pelo número SIM
 
 
 // Rota inicial redireciona para 'select-user'
@@ -17,8 +16,10 @@ Route::get('/select-user', function () {
 })->name('select-user');
 
 //rota para buscar os dados pelo número SIM
-Route::post('/brother-data', [BrotherController::class, 'getBrotherData']);
-
+// Rota para buscar dados do irmão do quadro
+Route::post('/brother-data', [Controller::class, 'getBrotherData']);
+// Rota para registrar presença
+Route::post('/register-presence', [Controller::class, 'registerPresence']);
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
