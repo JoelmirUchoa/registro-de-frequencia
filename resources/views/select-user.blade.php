@@ -17,6 +17,9 @@
             </div>
         </div>
     </div>
+    <div class="flex items-center justify-center">
+    <a href="http://" class="mt-4">Acesso do Secretário</a>
+    </div>
 
     <!-- Pop-up padrão (Irmão do Quadro e Visitante) -->
     <!-- <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -37,11 +40,11 @@
         </div>
     </div> -->
 
-    <!-- campos para exibir os dados -->
+    <!-- campos para exibir os dados Irmão do Quadro-->
     <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
-            <input id="brotherSimInput" type="text" placeholder="Número SIM"
+            <input id="brotherSimInput" type="text" placeholder="Número SIM" autocomplete="off"
                 class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                 onblur="fetchBrotherData()">
             <div id="brotherInfo" class="mt-4">
@@ -61,7 +64,7 @@
         </div>
     </div>
 
-
+    <!-- campos para exibir os dados Visitante -->
     <div id="visitor-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
@@ -114,7 +117,20 @@
         }
 
         function closePopup(type) {
+            clearFields(type); // Limpa os campos ao fechar o pop-up
             document.getElementById(`${type}-popup`).classList.add('hidden');
+        }
+
+        // Limpa o campo do número SIM e os dados exibidos do irmão. 
+        function clearFields(type) {
+            // Limpa o campo de entrada do número SIM
+            document.getElementById(`${type}SimInput`).value = "";
+
+            // Limpa os textos dos dados do irmão, caso existam
+            if (type === "brother") {
+                document.getElementById("brotherName").textContent = "";
+                document.getElementById("brotherPosition").textContent = "";
+            }
         }
 
         // Registrar presença (usando apenas uma função para irmãos e visitantes)
@@ -182,6 +198,7 @@
                 console.error('Erro ao buscar os dados:', error);
                 alert('Erro ao buscar os dados.');
             }
+            
         }
 
         // Verificar e cadastrar visitante
@@ -252,6 +269,12 @@
                 alert('Erro ao cadastrar visitante.');
             }
         }
+            //informações apareçam apenas ao pressionar Enter
+            document.getElementById('brotherSimInput').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    fetchBrotherData();
+                }
+            });
     </script>
 
 
