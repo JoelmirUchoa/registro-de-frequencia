@@ -20,6 +20,8 @@ Route::get('/select-user', function () {
 Route::post('/brother-data', [Controller::class, 'getBrotherData']);
 // Rota para registrar presença
 Route::post('/register-presence', [Controller::class, 'registerPresence']);
+Route::post('/get-brother-data', [Controller::class, 'getBrotherData']);
+
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

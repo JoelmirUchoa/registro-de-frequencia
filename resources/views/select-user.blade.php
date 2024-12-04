@@ -155,8 +155,8 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(result.message);
-                    closePopup(type);
+                    alert(result.message); // Mensagem de sucesso
+                    closePopup(type); // Fechar o pop-up
                 } else {
                     alert(result.message);
                 }
