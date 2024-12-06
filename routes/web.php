@@ -1,28 +1,25 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Controller; // Controlador principal
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Controller; //rota para buscar os dados pelo número SIM
 
-
-// Rota inicial redireciona para 'select-user'
+// Redireciona a rota inicial para a página de seleção de usuário
 Route::get('/', function () {
     return redirect('select-user');
 })->name('select-user');
 
-// Rota para a página de seleção de usuário
+// Página de seleção de usuário
 Route::get('/select-user', function () {
     return view('select-user');
 })->name('select-user');
 
-//rota para buscar os dados pelo número SIM
-// Rota para buscar dados do irmão do quadro
+// Rota para buscar dados do irmão do quadro pelo número SIM
 Route::post('/brother-data', [Controller::class, 'getBrotherData']);
+
 // Rota para registrar presença
 Route::post('/register-presence', [Controller::class, 'registerPresence']);
-Route::post('/get-brother-data', [Controller::class, 'getBrotherData']);
 
-
+// As rotas abaixo estão desativadas por não serem necessárias no momento
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

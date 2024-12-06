@@ -10,7 +10,7 @@ class Brother extends Model
     use HasFactory;
 
     // Definindo explicitamente o nome da tabela (caso seja diferente de 'brothers')
-    protected $table = 'brothers'; // Pode ser alterado se o nome da tabela for diferente
+    protected $table = 'brothers';
 
     // Definindo quais campos podem ser preenchidos (evitar Mass Assignment)
     protected $fillable = ['sim', 'name', 'position'];
