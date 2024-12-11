@@ -24,7 +24,8 @@ class Controller extends \Illuminate\Routing\Controller
     }
 
     // Método para registrar presença de um irmão do quadro
-    public function registerPresence(Request $request)
+    //public function registerPresence(Request $request)
+    public function registerBrotherPresence(Request $request)
     {
         $sim = $request->input('sim');
 

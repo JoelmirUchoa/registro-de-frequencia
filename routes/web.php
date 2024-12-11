@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Controller; // Controlador principal
+use App\Http\Controllers\Controller; // Controlador principal para irmãos
+use App\Http\Controllers\VisitorController; // Controlador para visitantes
 use Illuminate\Support\Facades\Route;
 
 // Redireciona a rota inicial para a página de seleção de usuário
@@ -13,17 +14,16 @@ Route::get('/select-user', function () {
     return view('select-user');
 })->name('select-user');
 
-// Rota para buscar dados do irmão do quadro pelo número SIM
+// Rota irmão do quadro 
 Route::post('/brother-data', [Controller::class, 'getBrotherData']);
+//Route::post('/register-presence', [Controller::class, 'registerPresence']);
+Route::post('/brother/register-presence', [Controller::class, 'registerBrotherPresence']);
 
-// Rota para registrar presença
-Route::post('/register-presence', [Controller::class, 'registerPresence']);
+// Rota irmão do visitante 
+//Route::post('/register-visitor', [VisitorController::class, 'register']);
+Route::post('/verify-visitor', [VisitorController::class, 'verify']);
+Route::post('/visitor/register-presence', [VisitorController::class, 'registerVisitorPresence']);
 
-// As rotas abaixo estão desativadas por não serem necessárias no momento
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-// require __DIR__.'/auth.php';
+Route::get('/visitor', function () {
+    return view('visitor-form');
+})->name('visitor-page');

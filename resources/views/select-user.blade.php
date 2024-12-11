@@ -9,6 +9,12 @@
                     class="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none">
                     Irmão do Quadro
                 </button>
+                
+                <!-- Botão Visitante -->
+                <button onclick="window.location.href='{{ route('visitor-page') }}'"
+                    class="w-full px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-500 focus:ring focus:ring-green-300 focus:outline-none">
+                    Visitante
+                </button>
             </div>
         </div>
     </div>
@@ -21,7 +27,7 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
             <div id="messageContainer" class="hidden"></div>
-            <input id="brotherSimInput" type="text" placeholder="Número SIM" autocomplete="off"
+            <input id="brother-sim" type="text" placeholder="Número SIM" autocomplete="off"
                 class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                 onblur="fetchBrotherData()">
             <div id="brotherInfo" class="mt-4">
@@ -29,11 +35,11 @@
                 <p id="brotherPosition" class="text-gray-500"></p>
             </div>
             <div class="mt-4 flex justify-end space-x-4">
-                <button onclick="closePopup('brother')"
+                <button onclick="window.location.href='{{ route('select-user') }}'"
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
                     Cancelar
                 </button>
-                <button onclick="registerPresence('brother')"
+                <button onclick="registerBrotherPresence('')"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
                     Registrar Presença
                 </button>
@@ -106,27 +112,34 @@
     }
 
     // Registrar presença (para irmãos e visitantes)
-    async function registerPresence(type) {
-        const simInput = document.getElementById(`${type}SimInput`).value;
+    function registerBrotherPresence() {
+    const sim = document.querySelector('#brother-sim').value; // Campo de SIM do irmão
 
-        if (!simInput) {
-            showMessage('Por favor, insira o número SIM.');
-            return;
-        }
-
-        const result = await sendPostRequest('/register-presence', { sim: simInput, type });
-
-        if (result.success) {
-            showMessage(result.message); // Mensagem de sucesso
-            closePopup(type); // Fechar o pop-up
+    fetch('/brother/register-presence', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ sim: sim })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
         } else {
-            showMessage(result.message);
+            alert('Erro: ' + data.message);
         }
-    }
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro na comunicação com o servidor.');
+    });
+}
 
     // Buscar dados do irmão do quadro
     async function fetchBrotherData() {
-        const sim = document.getElementById('brotherSimInput').value;
+        const sim = document.getElementById('brother-sim').value;
 
         if (!sim) {
             showMessage('Por favor, insira o número SIM.');
@@ -186,7 +199,7 @@
     }
 
     // Buscar dados ao pressionar Enter
-    document.getElementById('brotherSimInput').addEventListener('keypress', function (event) {
+    document.getElementById('brother-sim').addEventListener('keypress', function (event) {
         if (event.key === 'Enter') {
             fetchBrotherData();
         }
