@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="flex items-center justify-center">
-        <a href="#" class="mt-4">Acesso do Secretário</a>
+        <a href="{{ route('presence.report')}}" class="mt-4">Acesso do Secretário</a>
     </div>
 
     <!-- Pop-up para Irmão do Quadro -->

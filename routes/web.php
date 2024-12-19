@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Controller; // Controlador principal para irmãos
 use App\Http\Controllers\VisitorController; // Controlador para visitantes
+use App\Http\Controllers\ReportController;// Rota presença
+
 use Illuminate\Support\Facades\Route;
+
 
 // Redireciona a rota inicial para a página de seleção de usuário
 Route::get('/', function () {
@@ -23,6 +26,11 @@ Route::post('/brother/register-presence', [Controller::class, 'registerBrotherPr
 //Route::post('/register-visitor', [VisitorController::class, 'register']);
 Route::post('/verify-visitor', [VisitorController::class, 'verify']);
 Route::post('/visitor/register-presence', [VisitorController::class, 'registerVisitorPresence']);
+
+// Rota presença
+Route::get('/relatorio-presencas', [ReportController::class, 'showReport'])->name('presence.report');
+//Rota para exportar o PDF
+Route::get('/relatorio-presencas/pdf', [ReportController::class, 'exportPdf'])->name('presence.report.pdf');
 
 Route::get('/visitor', function () {
     return view('visitor-form');

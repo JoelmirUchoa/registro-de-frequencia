@@ -9,9 +9,9 @@ class Presence extends Model
 {
     use HasFactory;
 
-    protected $table = 'presences';
+    //protected $table = 'presences';
     
-    protected $fillable = ['user_id', 'user_type', 'date'];
+    protected $fillable = ['user_type', 'user_id', 'created_at', 'updated_at', 'date'];
 
     // Relacionamento polimórfico
     public function user()
