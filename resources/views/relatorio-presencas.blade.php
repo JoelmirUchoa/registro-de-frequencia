@@ -27,7 +27,15 @@
             <form method="GET" action="{{ route('presence.report') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <input type="text" name="name" placeholder="Nome" value="{{ request('name') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
                 <input type="text" name="sim" placeholder="SIM" value="{{ request('sim') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
-                <input type="text" name="position" placeholder="Cargo" value="{{ request('position') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
+                <!-- <input type="text" name="position" placeholder="Cargo" value="{{ request('position') }}" class="border p-2 rounded bg-gray-700 text-gray-100"> -->
+                <select name="position" id="position" class="border p-2 rounded bg-gray-700 text-gray-100">
+                    <option value="">Selecione o Cargo</option>
+                    @foreach($positions as $position)
+                        <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                            {{ $position }}
+                        </option>
+                    @endforeach
+                </select>
                 <select name="user_type" class="border p-2 rounded bg-gray-700 text-gray-100">
                     <option value="">Todos</option>
                     <option value="brother" {{ request('user_type') == 'brother' ? 'selected' : '' }}>Irmão</option>
