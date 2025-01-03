@@ -19,7 +19,6 @@ Route::get('/select-user', function () {
 
 // Rota irmão do quadro 
 Route::post('/brother-data', [Controller::class, 'getBrotherData']);
-//Route::post('/register-presence', [Controller::class, 'registerPresence']);
 Route::post('/brother/register-presence', [Controller::class, 'registerBrotherPresence']);
 
 // Rota irmão do visitante 

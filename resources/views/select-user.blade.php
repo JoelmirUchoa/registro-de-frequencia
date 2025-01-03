@@ -67,10 +67,17 @@
     }
 
     // Função para fechar o pop-up
+    // function closePopup(type) {
+    //     clearFields(type); // Limpa os campos ao fechar o pop-up
+    //     document.getElementById(`${type}-popup`).classList.add('hidden');
+    // }
     function closePopup(type) {
-        clearFields(type); // Limpa os campos ao fechar o pop-up
-        document.getElementById(`${type}-popup`).classList.add('hidden');
+    const popup = document.getElementById(`${type}-popup`);
+    if (popup) {
+        popup.classList.add('hidden');
     }
+    clearFields(type);
+}
 
     // Limpa os campos de entrada e dados exibidos
     function clearFields(type) {
@@ -111,31 +118,89 @@
         }
     }
 
-    // Registrar presença (para irmãos e visitantes)
-    function registerBrotherPresence() {
-    const sim = document.querySelector('#brother-sim').value; // Campo de SIM do irmão
+     // Função para exibir mensagens de confirmação
+     function showConfirmationMessage(message) {
+        const confirmationContainer = document.createElement('div');
+        confirmationContainer.textContent = message;
+        confirmationContainer.style.position = 'fixed';
+        confirmationContainer.style.top = '20px';
+        confirmationContainer.style.right = '20px';
+        confirmationContainer.style.backgroundColor = '#28a745';
+        confirmationContainer.style.color = 'white';
+        confirmationContainer.style.padding = '10px 20px';
+        confirmationContainer.style.borderRadius = '5px';
+        confirmationContainer.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+        confirmationContainer.style.zIndex = '1000';
 
-    fetch('/brother/register-presence', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({ sim: sim })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-        } else {
-            alert('Erro: ' + data.message);
+        document.body.appendChild(confirmationContainer);
+
+        // Remove a mensagem após 3 segundos
+        setTimeout(() => {
+            document.body.removeChild(confirmationContainer);
+        }, 3000);
+    }
+
+    // Registrar presença (para irmãos)
+    function registerBrotherPresence() {
+        const sim = document.querySelector('#brother-sim').value; // Campo de SIM do irmão
+
+        fetch('/brother/register-presence', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ sim: sim })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Exibe a mensagem de confirmação
+                showConfirmationMessage(data.message);
+
+                // Fecha o pop-up
+                closePopup('brother');
+            } else {
+                showMessage('Erro: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+            showMessage('Erro na comunicação com o servidor.');
+        });
+    }
+
+    // Função para fechar o pop-up
+    function closePopup(type) {
+        const popup = document.getElementById(`${type}-popup`);
+        if (popup) {
+            popup.classList.add('hidden');
         }
-    })
-    .catch(error => {
-        console.error('Erro na requisição:', error);
-        alert('Erro na comunicação com o servidor.');
-    });
-}
+        clearFields(type);
+    }
+
+    // Limpa os campos de entrada e dados exibidos
+    function clearFields(type) {
+        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número SIM
+
+        if (type === "brother") {
+            document.getElementById("brotherName").textContent = "";
+            document.getElementById("brotherPosition").textContent = "";
+        }
+    }
+
+    // Função para exibir mensagens de erro ou informações
+    function showMessage(message) {
+        const messageContainer = document.getElementById('messageContainer');
+        messageContainer.textContent = message;
+        messageContainer.classList.remove('hidden');
+        
+        // Esconde a mensagem após 5 segundos
+        setTimeout(() => {
+            messageContainer.classList.add('hidden');
+        }, 5000);
+    }
+
 
     // Buscar dados do irmão do quadro
     async function fetchBrotherData() {
@@ -157,6 +222,7 @@
         }
     }
 
+    //<visitante>
     // Verificar se o visitante já está registrado
     async function verifyVisitor() {
         const sim = document.getElementById('visitorSimInput').value;
@@ -204,8 +270,7 @@
             fetchBrotherData();
         }
     });
+    //</visitante>
 </script>
-
-
 
 </x-guest-layout>
