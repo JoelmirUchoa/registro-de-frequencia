@@ -10,6 +10,6 @@ class Visitor extends Model
     protected $fillable = [
     'sim',
     'name',
-    'position', // Novo campo adicionado
+    'position',
     ];
 }

@@ -23,6 +23,7 @@ Route::post('/brother/register-presence', [Controller::class, 'registerBrotherPr
 
 // Rota irmão do visitante 
 //Route::post('/register-visitor', [VisitorController::class, 'register']);
+Route::post('/register-visitor', [VisitorController::class, 'register'])->name('register-visitor');
 Route::post('/verify-visitor', [VisitorController::class, 'verify']);
 Route::post('/visitor/register-presence', [VisitorController::class, 'registerVisitorPresence']);
 

@@ -13,17 +13,26 @@ class VisitorController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sim' => 'required|string|unique:visitors,sim',
+            'position' => 'required|string|max:255',
         ]);
-
+    
+        // Geração automática do número SIM
+        //$sim = strtoupper(uniqid('SIM-'));
+        $sim = random_int(100000, 999999);
+    
         // Cria o visitante no banco de dados
         $visitor = Visitor::create([
             'name' => $validated['name'],
-            'sim' => $validated['sim'],
+            'sim' => $sim, 
+            'position' => $validated['position'],
         ]);
-
-        return response()->json(['success' => true, 'message' => 'Visitante cadastrado com sucesso!', 'data' => $visitor]);
-    }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Visitante cadastrado com sucesso!',
+            'data' => $visitor
+        ]);
+    }    
 
     // Método para verificar se um visitante existe
     public function verify(Request $request)
@@ -44,31 +53,44 @@ class VisitorController extends Controller
     public function registerVisitorPresence(Request $request)
     {
         $sim = $request->input('sim');
-
+    
         // Verifica se o SIM foi fornecido
         if (empty($sim)) {
-            return response()->json(['success' => false, 'message' => 'Número SIM é obrigatório.']);
+            return response()->json([
+                'success' => false, 
+                'message' => 'O número SIM é obrigatório.'
+            ]);
         }
-
+    
         // Busca o visitante pelo número SIM
         $visitor = Visitor::where('sim', $sim)->first();
-
+    
         // Verifica se o visitante foi encontrado
-        if ($visitor) {
-            try {
-                // Registra a presença do visitante
-                Presence::create([
-                    'user_type' => 'visitor',   // Tipo será "visitor" neste contexto
-                    'user_id' => $visitor->id, // ID do visitante
-                    'date' => now(),           // Data atual
-                ]);
-
-                return response()->json(['success' => true, 'message' => 'Presença do Visitante registrada com sucesso.']);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Erro ao registrar presença: ' . $e->getMessage()]);
-            }
-        } else {
-            return response()->json(['success' => false, 'message' => 'Visitante não encontrado.']);
+        if (!$visitor) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Visitante não encontrado.'
+            ]);
         }
-    }
+    
+        try {
+            // Registra a presença do visitante
+            Presence::create([
+                'user_type' => 'visitor',   // Tipo será "visitor" neste contexto
+                'user_id' => $visitor->id, // ID do visitante
+                'date' => now(),           // Data atual
+            ]);
+    
+            return response()->json([
+                'success' => true, 
+                'message' => 'Presença do visitante registrada com sucesso.'
+            ]);
+        } catch (\Exception $e) {
+            // Captura erros e retorna uma mensagem adequada
+            return response()->json([
+                'success' => false, 
+                'message' => 'Erro ao registrar presença: ' . $e->getMessage()
+            ]);
+        }
+    }    
 }
