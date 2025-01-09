@@ -41,9 +41,13 @@ class ReportController extends Controller
                 'brothers.sim as brother_sim',
                 'brothers.name as brother_name',
                 'brothers.position as brother_position',
+                'brothers.loja as brother_loja',
+                'brothers.numero_da_loja as brother_numero_da_loja',
                 'visitors.sim as visitor_sim',
                 'visitors.name as visitor_name',
-                'visitors.position as visitor_position'
+                'visitors.position as visitor_position',
+                'visitors.loja as visitor_loja',
+                'visitors.numero_da_loja as visitor_numero_da_loja'
             );
 
         // Aplicar filtros
@@ -89,6 +93,10 @@ class ReportController extends Controller
             $query->orderBy(DB::raw('COALESCE(brothers.position, visitors.position)'), $sortDirection);
         } elseif ($sortBy === 'sim') {
             $query->orderBy(DB::raw('COALESCE(brothers.sim, visitors.sim)'), $sortDirection);
+        } elseif ($sortBy === 'loja') {
+            $query->orderBy(DB::raw('COALESCE(brothers.loja, visitors.loja)'), $sortDirection);
+        } elseif ($sortBy === 'numero_da_loja') {
+            $query->orderBy(DB::raw('COALESCE(brothers.numero_da_loja, visitors.numero_da_loja)'), $sortDirection);
         } elseif ($sortBy === 'user_type') {
             $query->orderBy(DB::raw("CASE presences.user_type WHEN 'brother' THEN 'Irmão' ELSE 'Visitante' END"), $sortDirection);
         } else {
@@ -99,15 +107,15 @@ class ReportController extends Controller
         $reportData = $query->paginate($perPage);
 
         // Transformação dos dados
-        $transformedData = $reportData->map(function ($presence) {
+        $transformedData = $reportData->getCollection()->map(function ($row) {
             return [
-                'sim' => $presence->user_type === 'brother' 
-                    ? ($presence->brother_sim ?? 'N/A')
-                    : ($presence->visitor_sim ?? 'N/A'),
-                'name' => $presence->brother_name ?? $presence->visitor_name ?? 'Desconhecido',
-                'position' => $presence->brother_position ?? $presence->visitor_position ?? 'N/A',
-                'user_type' => $presence->user_type === 'brother' ? 'Irmão' : 'Visitante',
-                'date' => $presence->presence_date ? Carbon::parse($presence->presence_date)->format('d/m/Y H:i') : 'Data não disponível',
+                'sim' => $row->user_type === 'brother' ? $row->brother_sim : $row->visitor_sim,
+                'name' => $row->user_type === 'brother' ? $row->brother_name : $row->visitor_name,
+                'position' => $row->user_type === 'brother' ? $row->brother_position : $row->visitor_position,
+                'loja' => $row->user_type === 'brother' ? $row->brother_loja : $row->visitor_loja,
+                'numero_da_loja' => $row->user_type === 'brother' ? $row->brother_numero_da_loja : $row->visitor_numero_da_loja,
+                'user_type' => $row->user_type,
+                'date' => Carbon::parse($row->presence_date)->format('d/m/Y'),
             ];
         });
 
@@ -156,13 +164,13 @@ class ReportController extends Controller
         if ($request->filled('date') && $request->filled('end_date')) {
             $startDate = Carbon::parse($request->date)->startOfDay();
             $endDate = Carbon::parse($request->end_date)->endOfDay();
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('presences.created_at', [$startDate, $endDate]);
         } elseif ($request->filled('date')) {
             $query->whereDate('created_at', Carbon::parse($request->date));
         }
 
         // Ordenação
-        if ($request->filled('sort_by') && in_array($request->sort_by, ['sim', 'name', 'position', 'user_type', 'date'])) {
+        if ($request->filled('sort_by') && in_array($request->sort_by, ['sim', 'name', 'position','loja','numero_da_loja', 'user_type', 'date'])) {
             $sortBy = $request->sort_by;
             $sortDirection = $request->sort_direction === 'asc' ? 'asc' : 'desc';
 
@@ -202,13 +210,18 @@ class ReportController extends Controller
                 'sim' => $user->sim ?? 'N/A',
                 'name' => $user->name ?? 'Desconhecido',
                 'position' => $user->position ?? 'N/A',
+                'loja' => $user->loja ?? 'N/A',
+                'numero_da_loja' => $user->numero_da_loja ?? 'N/A', 
                 'user_type' => $presence->user_type === 'brother' ? 'Irmão' : 'Visitante',
                 'date' => $presence->created_at ? Carbon::parse($presence->created_at)->format('d/m/Y H:i') : 'Sem data',
             ];
         });
 
+        // Adicionar o valor de user_type
+        $userType = $request->input('user_type', 'geral'); // Valor padrão: 'geral'
+
         // Gerar o PDF com os dados filtrados
-        $pdf = Pdf::loadView('relatorio-presencas-pdf', compact('reportData'));
+        $pdf = Pdf::loadView('relatorio-presencas-pdf', compact('reportData', 'userType'));
 
         return $pdf->download('relatorio-presencas.pdf');
     }

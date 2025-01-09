@@ -11,5 +11,7 @@ class Visitor extends Model
     'sim',
     'name',
     'position',
+    'loja',
+    'numero_da_loja',
     ];
 }

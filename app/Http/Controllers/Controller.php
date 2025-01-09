@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brother;  // Modelo para os dados do irmão
+use App\Models\Visitor;
 use App\Models\Presence; // Modelo para presença
 
 class Controller extends \Illuminate\Routing\Controller
@@ -16,10 +17,35 @@ class Controller extends \Illuminate\Routing\Controller
         // Busca o irmão do quadro pelo número SIM
         $brother = Brother::where('sim', $sim)->first();
 
+        // Busca o visitante pelo número SIM
+        $visitor = Visitor::where('sim', $sim)->first();
+
+        // Verifica se o SIM já está registrado como visitante
+        if ($visitor) {
+            return response()->json([
+                'success' => false,
+                'message' => 'SIM já cadastrado como visitante.',
+                'type' => 'visitor',
+                'data' => $visitor
+            ]);
+        }
+
         if ($brother) {
-            return response()->json(['success' => true, 'data' => $brother]);
+            return response()->json([
+                'success' => true,
+                'type' => 'brother',
+                'data' => [
+                    'name' => $brother->name,
+                    'position' => $brother->position,
+                    'loja' => $brother->loja,
+                    'numero_da_loja' => $brother->numero_da_loja,
+                ]
+            ]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Irmão não encontrado.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'SIM não encontrado como irmão ou visitante.'
+            ]);
         }
     }
 

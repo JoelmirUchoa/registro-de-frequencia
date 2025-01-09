@@ -63,6 +63,10 @@
                     <input type="hidden" name="name" value="{{ request('name') }}">
                     <input type="hidden" name="sim" value="{{ request('sim') }}">
                     <input type="hidden" name="position" value="{{ request('position') }}">
+
+                    <input type="hidden" name="loja" value="{{ request('loja') }}">
+                    <input type="hidden" name="numero_da_loja" value="{{ request('numero_da_loja') }}">
+
                     <input type="hidden" name="user_type" value="{{ request('user_type') }}">
                     <input type="hidden" name="date" value="{{ request('date') }}">
                     <input type="hidden" name="end_date" value="{{ request('end_date') }}">
@@ -115,6 +119,25 @@
                                 @endif
                             </a>
                         </th>
+
+                        <th class="border p-2">
+                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                Loja
+                                @if(request('sort_by') === 'loja')
+                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="border p-2">
+                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'numero_da_loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                Número da Loja
+                                @if(request('sort_by') === 'numero_da_loja')
+                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                @endif
+                            </a>
+                        </th>
+
+
                         <th class="border p-2">
                             <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'user_type', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
                                 Tipo de Usuário
@@ -139,6 +162,8 @@
                             <td class="border p-2">{{ $data['sim'] }}</td>
                             <td class="border p-2">{{ $data['name'] }}</td>
                             <td class="border p-2">{{ $data['position'] }}</td>
+                            <td class="border p-2">{{ $data['loja'] }}</td>
+                            <td class="border p-2">{{ $data['numero_da_loja'] }}</td>
                             <td class="border p-2">{{ $data['user_type'] }}</td>
                             <td class="border p-2">{{ $data['date'] }}</td>
                         </tr>

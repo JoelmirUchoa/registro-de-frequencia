@@ -22,7 +22,16 @@
     </style>
 </head>
 <body>
-    <h1>Relatório de Presenças</h1>
+    <h1>
+        Relatório de Presenças - 
+        @if($userType === 'brother')
+            Irmão
+        @elseif($userType === 'visitor')
+            Visitante
+        @else
+            Geral
+        @endif
+    </h1>
     <table>
         <thead>
             <tr>
@@ -30,6 +39,8 @@
                 <th>Nome</th>
                 <th>Cargo</th>
                 <th>Tipo</th>
+                <th>Loja</th>
+                <th>Número da Loja</th>
                 <th>Data</th>
             </tr>
         </thead>
@@ -40,6 +51,8 @@
                     <td>{{ $data['name'] }}</td>
                     <td>{{ $data['position'] }}</td>
                     <td>{{ $data['user_type'] }}</td>
+                    <td>{{ $data['loja'] }}</td>
+                    <td>{{ $data['numero_da_loja'] }}</td>
                     <td>{{ $data['date'] }}</td>
                 </tr>
             @endforeach

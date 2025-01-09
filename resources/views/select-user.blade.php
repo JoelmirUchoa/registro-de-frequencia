@@ -33,6 +33,8 @@
             <div id="brotherInfo" class="mt-4">
                 <p id="brotherName" class="text-gray-700 font-semibold"></p>
                 <p id="brotherPosition" class="text-gray-500"></p>
+                <p id="brotherLoja" class="text-gray-500"></p>
+                <p id="brotherNumeroLoja" class="text-gray-500"></p>
             </div>
             <div class="mt-4 flex justify-end space-x-4">
                 <button onclick="window.location.href='{{ route('select-user') }}'"
@@ -214,11 +216,19 @@
         const result = await sendPostRequest('/brother-data', { sim });
 
         if (result.success) {
-            const brotherData = result.data;
-            document.getElementById('brotherName').textContent = `Nome: ${brotherData.name}`;
-            document.getElementById('brotherPosition').textContent = `Cargo: ${brotherData.position}`;
+            if (result.type === 'brother') {
+                const brotherData = result.data;
+                document.getElementById('brotherName').textContent = `Nome: ${brotherData.name}`;
+                document.getElementById('brotherPosition').textContent = `Cargo: ${brotherData.position}`;
+                document.getElementById('brotherLoja').textContent = `Loja: ${brotherData.loja}`;
+                document.getElementById('brotherNumeroLoja').textContent = `Número da Loja: ${brotherData.numero_da_loja}`;
+            }
         } else {
-            showMessage(result.message);
+            if (result.type === 'visitor') {
+                showMessage(`Aviso: Este SIM já está cadastrado como visitante. Nome: ${result.data.name}`);
+            } else {
+                showMessage(result.message);
+            }
         }
     }
 
