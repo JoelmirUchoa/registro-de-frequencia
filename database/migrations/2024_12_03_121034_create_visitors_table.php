@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->string('sim')->unique(); // Número SIM único
+            $table->string('sim')->unique(); // Número CIM único
             $table->string('name');          // Nome do visitante
             $table->timestamps();            // Campos created_at e updated_at
         });

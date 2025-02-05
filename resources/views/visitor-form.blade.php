@@ -2,9 +2,9 @@
     <!-- Container Principal para Visitante -->
     <div class="flex items-center justify-center bg-gray-100">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h3 class="text-lg font-bold text-gray-700">Digite o número SIM do Visitante</h3>
+            <h3 class="text-lg font-bold text-gray-700">Digite o número CIM do Visitante</h3>
             <div id="visitorMessageContainer" class="hidden bg-blue-100 text-blue-800 px-4 py-2 rounded"></div>
-            <input id="visitor-sim" type="text" placeholder="Número SIM" autocomplete="off"
+            <input id="visitor-sim" type="text" placeholder="Número CIM" autocomplete="off"
                 class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                 onkeydown="handleEnterKey(event)">
             <div id="visitorInfo" class="mt-4 hidden">
@@ -39,7 +39,7 @@
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
                 <input type="text" name="position" placeholder="Cargo do Visitante" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
-                <input type="text" name="sim" placeholder="Número SIM" required
+                <input type="text" name="sim" placeholder="Número CIM" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
                 <input type="text" name="loja" placeholder="Loja" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
@@ -75,7 +75,7 @@
             const popup = document.getElementById(`${type}-popup`);
             popup.classList.remove('hidden');
             if (type === 'register-visitor') {
-                // Gera um número SIM apenas numérico
+                // Gera um número CIM apenas numérico
                 document.getElementById('generated-sim').value = Math.floor(100000 + Math.random() * 900000);
             }
         }
@@ -130,7 +130,7 @@
             registerNewVisitor.classList.add('hidden');
 
             if (!sim) {
-                showMessage('Por favor, insira o número SIM.', 'error');
+                showMessage('Por favor, insira o número CIM.', 'error');
                 return;
             }
 
@@ -144,7 +144,7 @@
                     Número da Loja: ${result.data.numero_da_loja}
                 `;
                 visitorInfo.classList.remove('hidden');
-            } else if (result?.message === 'O número SIM informado já está cadastrado como irmão.') {
+            } else if (result?.message === 'O número CIM informado já está cadastrado como irmão.') {
                 showMessage(result.message, 'error');
             } else {
                 showMessage(result?.message || 'Visitante não encontrado.', 'error');

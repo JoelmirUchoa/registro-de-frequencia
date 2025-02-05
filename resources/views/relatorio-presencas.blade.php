@@ -26,7 +26,7 @@
             <h2 class="text-lg font-semibold mb-4">Filtrar Relatório</h2>
             <form method="GET" action="{{ route('presence.report') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <input type="text" name="name" placeholder="Nome" value="{{ request('name') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
-                <input type="text" name="sim" placeholder="SIM" value="{{ request('sim') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
+                <input type="text" name="sim" placeholder="CIM" value="{{ request('sim') }}" class="border p-2 rounded bg-gray-700 text-gray-100">
                 <!-- <input type="text" name="position" placeholder="Cargo" value="{{ request('position') }}" class="border p-2 rounded bg-gray-700 text-gray-100"> -->
                 <select name="position" id="position" class="border p-2 rounded bg-gray-700 text-gray-100">
                     <option value="">Selecione o Cargo</option>
@@ -86,7 +86,7 @@
             <table class="w-full border-collapse border border-gray-700 text-gray-100">
                 <!-- <thead>
                     <tr class="bg-gray-700">
-                        <th class="border p-2">SIM</th>
+                        <th class="border p-2">CIM</th>
                         <th class="border p-2">Nome</th>
                         <th class="border p-2">Cargo</th>
                         <th class="border p-2">Tipo de Usuário</th>
@@ -97,7 +97,7 @@
                     <tr>
                         <th class="border p-2">
                             <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'sim', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                SIM
+                            CIM
                                 @if(request('sort_by') === 'sim')
                                     <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
                                 @endif

@@ -25,9 +25,9 @@
     <h1>
         Relatório de Presenças - 
         @if($userType === 'brother')
-            Irmão
+            Irmão do Quadro
         @elseif($userType === 'visitor')
-            Visitante
+            Irmão Visitante
         @else
             Geral
         @endif
@@ -35,7 +35,7 @@
     <table>
         <thead>
             <tr>
-                <th>SIM</th>
+                <th>CIM</th>
                 <th>Nome</th>
                 <th>Cargo</th>
                 <th>Tipo</th>

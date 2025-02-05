@@ -14,17 +14,17 @@ class Controller extends \Illuminate\Routing\Controller
     {
         $sim = $request->input('sim');
 
-        // Busca o irmão do quadro pelo número SIM
+        // Busca o irmão do quadro pelo número CIM
         $brother = Brother::where('sim', $sim)->first();
 
-        // Busca o visitante pelo número SIM
+        // Busca o visitante pelo número CIM
         $visitor = Visitor::where('sim', $sim)->first();
 
-        // Verifica se o SIM já está registrado como visitante
+        // Verifica se o CIM já está registrado como visitante
         if ($visitor) {
             return response()->json([
                 'success' => false,
-                'message' => 'SIM já cadastrado como visitante.',
+                'message' => 'CIM já cadastrado como visitante.',
                 'type' => 'visitor',
                 'data' => $visitor
             ]);
@@ -44,7 +44,7 @@ class Controller extends \Illuminate\Routing\Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'SIM não encontrado como irmão ou visitante.'
+                'message' => 'CIM não encontrado como irmão ou visitante.'
             ]);
         }
     }
@@ -55,12 +55,12 @@ class Controller extends \Illuminate\Routing\Controller
     {
         $sim = $request->input('sim');
 
-        // Verifica se o SIM foi fornecido
+        // Verifica se o CIM foi fornecido
         if (empty($sim)) {
-            return response()->json(['success' => false, 'message' => 'Número SIM é obrigatório.']);
+            return response()->json(['success' => false, 'message' => 'Número CIM é obrigatório.']);
         }
 
-        // Busca o irmão pelo número SIM
+        // Busca o irmão pelo número CIM
         $brother = Brother::where('sim', $sim)->first();
 
         // Verifica se o irmão foi encontrado

@@ -2,32 +2,32 @@
     <!-- Container Principal -->
     <div class="flex items-center justify-center bg-gray-100">
         <div class="p-8 space-y-6 bg-white rounded-lg shadow-md w-96">
-            <h2 class="text-2xl font-bold text-center text-gray-700">Escolha o Tipo de Usuário</h2>
+            <h2 class="text-2xl font-bold text-center text-gray-700">Registrar Presença</h2>
             <div class="space-y-4">
                 <!-- Botão Irmão do Quadro -->
                 <button onclick="openPopup('brother')"
-                    class="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none">
+                    class="w-full px-8 py-6 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none mb-6 text-xl font-bold">
                     Irmão do Quadro
                 </button>
                 
                 <!-- Botão Visitante -->
                 <button onclick="window.location.href='{{ route('visitor-page') }}'"
-                    class="w-full px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-500 focus:ring focus:ring-green-300 focus:outline-none">
-                    Visitante
+                    class="w-full px-8 py-6 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none text-xl font-bold">
+                    Irmão Visitante
                 </button>
             </div>
         </div>
     </div>
     <div class="flex items-center justify-center">
-        <a href="{{ route('presence.report')}}" class="mt-4">Acesso do Secretário</a>
+        <a href="{{ route('presence.report')}}" class="mt-4 text-white">Acesso do Chanceler</a>
     </div>
 
     <!-- Pop-up para Irmão do Quadro -->
     <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h3 class="text-lg font-bold text-gray-700">Digite o número SIM</h3>
+            <h3 class="text-lg font-bold text-gray-700">Digite o número CIM</h3>
             <div id="messageContainer" class="hidden"></div>
-            <input id="brother-sim" type="text" placeholder="Número SIM" autocomplete="off"
+            <input id="brother-sim" type="text" placeholder="Número CIM" autocomplete="off"
                 class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                 onblur="fetchBrotherData()">
             <div id="brotherInfo" class="mt-4">
@@ -83,7 +83,7 @@
 
     // Limpa os campos de entrada e dados exibidos
     function clearFields(type) {
-        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número SIM
+        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número CIM
 
         if (type === "brother") {
             document.getElementById("brotherName").textContent = "";
@@ -144,7 +144,7 @@
 
     // Registrar presença (para irmãos)
     function registerBrotherPresence() {
-        const sim = document.querySelector('#brother-sim').value; // Campo de SIM do irmão
+        const sim = document.querySelector('#brother-sim').value; // Campo de CIM do irmão
 
         fetch('/brother/register-presence', {
             method: 'POST',
@@ -183,7 +183,7 @@
 
     // Limpa os campos de entrada e dados exibidos
     function clearFields(type) {
-        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número SIM
+        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número CIM
 
         if (type === "brother") {
             document.getElementById("brotherName").textContent = "";
@@ -209,7 +209,7 @@
         const sim = document.getElementById('brother-sim').value;
 
         if (!sim) {
-            showMessage('Por favor, insira o número SIM.');
+            showMessage('Por favor, insira o número CIM.');
             return;
         }
 
@@ -225,7 +225,7 @@
             }
         } else {
             if (result.type === 'visitor') {
-                showMessage(`Aviso: Este SIM já está cadastrado como visitante. Nome: ${result.data.name}`);
+                showMessage(`Aviso: Este CIM já está cadastrado como visitante. Nome: ${result.data.name}`);
             } else {
                 showMessage(result.message);
             }
@@ -238,7 +238,7 @@
         const sim = document.getElementById('visitorSimInput').value;
 
         if (!sim) {
-            showMessage('Por favor, insira o número SIM.');
+            showMessage('Por favor, insira o número CIM.');
             return;
         }
 
@@ -267,7 +267,7 @@
         const result = await sendPostRequest('/register-visitor', { name, sim });
 
         if (result.success) {
-            showMessage(`Visitante ${name} com SIM ${sim} cadastrado com sucesso!`);
+            showMessage(`Visitante ${name} com CIM ${sim} cadastrado com sucesso!`);
             closePopup('register');
         } else {
             showMessage('Erro ao cadastrar visitante.');

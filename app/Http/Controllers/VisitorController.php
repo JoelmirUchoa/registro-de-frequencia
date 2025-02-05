@@ -21,21 +21,21 @@ class VisitorController extends Controller
                 'numero_da_loja' => 'required|string|max:255',
             ]);
 
-            // Verifica se o SIM já está registrado como "Visitante"
+            // Verifica se o CIM já está registrado como "Visitante"
             $existingVisitor = Visitor::where('sim', $validated['sim'])->first();
             if ($existingVisitor) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'O número SIM informado já está cadastrado como visitante.',
+                    'message' => 'O número CIM informado já está cadastrado como visitante.',
                 ], 422);
             }
 
-            // Verifica se o SIM já está registrado como "Irmão"
+            // Verifica se o CIM já está registrado como "Irmão"
             $existingBrother = Brother::where('sim', $validated['sim'])->first();
             if ($existingBrother) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'O número SIM informado já está cadastrado como irmão.',
+                    'message' => 'O número CIM informado já está cadastrado como irmão.',
                 ], 422);
             }
 
@@ -66,22 +66,22 @@ class VisitorController extends Controller
 {
     $sim = $request->input('sim');
 
-    // Verifica se o SIM pertence a um irmão
+    // Verifica se o CIM pertence a um irmão
     $brother = Brother::where('sim', $sim)->first();
         if ($brother) {
             return response()->json([
                 'success' => false,
-                'message' => 'O número SIM informado já está cadastrado como irmão.',
+                'message' => 'O número CIM informado já está cadastrado como irmão.',
             ]);
         }
 
-        // Verifica se o SIM pertence a um visitante
+        // Verifica se o CIM pertence a um visitante
         $visitor = Visitor::where('sim', $sim)->first();
         if ($visitor) {
             return response()->json(['success' => true, 'data' => $visitor]);
         }
 
-        // Caso o SIM não seja encontrado em nenhum lugar
+        // Caso o CIM não seja encontrado em nenhum lugar
         return response()->json([
             'success' => false,
             'message' => 'Visitante não encontrado.',
@@ -94,15 +94,15 @@ class VisitorController extends Controller
     {
         $sim = $request->input('sim');
     
-        // Verifica se o SIM foi fornecido
+        // Verifica se o CIM foi fornecido
         if (empty($sim)) {
             return response()->json([
                 'success' => false, 
-                'message' => 'O número SIM é obrigatório.',
+                'message' => 'O número CIM é obrigatório.',
             ]);
         }
     
-        // Busca o visitante pelo número SIM
+        // Busca o visitante pelo número CIM
         $visitor = Visitor::where('sim', $sim)->first();
     
         // Verifica se o visitante foi encontrado
