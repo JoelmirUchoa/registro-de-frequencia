@@ -71,12 +71,19 @@
                     <input type="hidden" name="date" value="{{ request('date') }}">
                     <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                 </div>
-                <!-- <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    Exportar PDF
-                </button> -->
-                <a href="{{ route('presence.report.pdf', array_merge(request()->all(), ['sort_by' => request('sort_by'), 'sort_direction' => request('sort_direction')])) }}" class="btn btn-primary">
-                    Exportar PDF
-                </a>
+                <div class="sm:col-span-2 lg:col-span-3 text-right">
+                    <!-- <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Exportar PDF
+                    </button> -->
+                    <a href="{{ route('presence.report.pdf', array_merge(request()->all(), ['sort_by' => request('sort_by'), 'sort_direction' => request('sort_direction')])) }}" class="btn btn-primary mr-8">
+                        Exportar PDF
+                    </a>
+
+                    <!-- Adicionar o Botão "Imprimir Presença" -->
+                    <a href="{{ route('presence.report.print', array_merge(request()->all(), ['sort_by' => request('sort_by'), 'sort_direction' => request('sort_direction')])) }}" class="btn btn-secondary" target="_blank">
+                        Imprimir Presença
+                    </a>
+                </div>
             </form>
         </section>
 

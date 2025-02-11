@@ -1,8 +1,8 @@
 <x-guest-layout>
     <!-- Container Principal -->
-    <div class="flex items-center justify-center bg-gray-100">
-        <div class="p-8 space-y-6 bg-white rounded-lg shadow-md w-96">
-            <h2 class="text-2xl font-bold text-center text-gray-700">Registrar Presença</h2>
+    <div class="flex items-center justify-center">
+        <div class="p-8 space-y-6 bg-gray-700 bg-opacity-50 rounded-lg shadow-md w-full sm:w-96">
+            <h2 class="text-2xl font-bold text-center text-gray-100">Registrar Presença</h2>
             <div class="space-y-4">
                 <!-- Botão Irmão do Quadro -->
                 <button onclick="openPopup('brother')"
@@ -18,8 +18,38 @@
             </div>
         </div>
     </div>
-    <div class="flex items-center justify-center">
+    <!-- <div class="flex items-center justify-center">
         <a href="{{ route('presence.report')}}" class="mt-4 text-white">Acesso do Chanceler</a>
+    </div> -->
+    <div class="flex items-center justify-center">
+        <a href="#" onclick="document.getElementById('login-popup').classList.remove('hidden');" class=" font-bold mt-4 text-white bg-gray-800 bg-opacity-50">Acesso do Chanceler</a>
+    </div>
+    <!-- Pop-up de Login -->
+    <div id="login-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 class="text-lg font-bold text-gray-700">Login</h3>
+            <form method="POST" action="{{ route('login.chancellor') }}">
+                @csrf
+                <div class="mt-4">
+                    <input type="text" name="username" placeholder="Nome" autocomplete="off" required 
+                        class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none">
+                </div>
+                <div class="mt-4">
+                    <input type="password" name="password" placeholder="Senha" required
+                        class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none">
+                </div>
+                <div class="mt-4 flex justify-end space-x-4">
+                    <button type="button" onclick="document.getElementById('login-popup').classList.add('hidden');"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Pop-up para Irmão do Quadro -->

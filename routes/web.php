@@ -31,6 +31,12 @@ Route::post('/visitor/register-presence', [VisitorController::class, 'registerVi
 Route::get('/relatorio-presencas', [ReportController::class, 'showReport'])->name('presence.report');
 //Rota para exportar o PDF
 Route::get('/relatorio-presencas/pdf', [ReportController::class, 'exportPdf'])->name('presence.report.pdf');
+//Rota para imprimir o PDF
+Route::get('/presence/report/print', [ReportController::class, 'print'])->name('presence.report.print');
+
+// Rota para login do chanceler
+Route::post('/login-chancellor', [ReportController::class, 'loginChancellor'])->name('login.chancellor');
+
 
 Route::get('/visitor', function () {
     return view('visitor-form');

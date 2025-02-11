@@ -1,3 +1,3 @@
 <!-- resources/views/components/application-logo.blade.php -->
 
-<img src="{{ asset('images/VianadeCarvalho.png') }}" alt="Minha Imagem" class="w-20 h-20 mx-auto rounded-full">
+<img src="{{ asset('images/VianadeCarvalho.png') }}" alt="Minha Imagem" style="width: 160px; height: 160px;" class="mx-auto rounded-full">

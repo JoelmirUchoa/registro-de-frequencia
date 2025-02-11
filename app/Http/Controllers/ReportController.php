@@ -225,4 +225,46 @@ class ReportController extends Controller
 
         return $pdf->download('relatorio-presencas.pdf');
     }
+
+    public function print(Request $request)
+    {
+        $presences = DB::table('presences')
+            ->leftJoin('brothers', function ($join) {
+                $join->on('presences.user_id', '=', 'brothers.id')
+                    ->where('presences.user_type', '=', 'brother');
+            })
+            ->leftJoin('visitors', function ($join) {
+                $join->on('presences.user_id', '=', 'visitors.id')
+                    ->where('presences.user_type', '=', 'visitor');
+            })
+            ->select(
+                'presences.id',
+                'presences.created_at',
+                DB::raw('COALESCE(brothers.sim, visitors.sim) as sim'),
+                DB::raw('COALESCE(brothers.name, visitors.name) as name'),
+                DB::raw('COALESCE(brothers.position, visitors.position) as position'),
+                DB::raw('COALESCE(brothers.loja, visitors.loja) as loja'),
+                DB::raw('COALESCE(brothers.numero_da_loja, visitors.numero_da_loja) as numero_da_loja')
+            )
+            ->whereDate('presences.created_at', now()->toDateString())
+            ->get()
+            ->map(function ($presence) {
+                $presence->created_at = Carbon::parse($presence->created_at);
+                return $presence;
+            });
+
+        return view('presence-print', compact('presences'));
+    }
+    // Adicionar a Verificação de Senha no Controlador
+    public function loginChancellor(Request $request)
+    {
+        $username = $request->input('username');
+        $password = $request->input('password');
+
+        if ($username === '1' && $password === '123') {
+            return redirect()->route('presence.report');
+        } else {
+            return redirect()->back()->withErrors(['message' => 'Nome ou senha incorretos.']);
+        }
+    }
 }
