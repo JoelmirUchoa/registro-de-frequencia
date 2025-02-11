@@ -4,9 +4,12 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número CIM do Visitante</h3>
             <div id="visitorMessageContainer" class="hidden bg-blue-100 text-blue-800 px-4 py-2 rounded"></div>
-            <input id="visitor-sim" type="text" placeholder="Número CIM" autocomplete="off"
-                class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                onkeydown="handleEnterKey(event)">
+                <div class="flex items-center mt-4">
+                    <input id="visitor-sim" type="text" placeholder="Número CIM" autocomplete="off"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                        onkeydown="handleEnterKey(event)" onblur="verifyVisitor()">
+                    <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">Pesquisar</button>
+                </div>
             <div id="visitorInfo" class="mt-4 hidden">
                 <p id="visitorName" class="text-gray-700 font-semibold"></p>
             </div>

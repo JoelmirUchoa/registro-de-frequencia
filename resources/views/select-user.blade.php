@@ -57,9 +57,12 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número CIM</h3>
             <div id="messageContainer" class="hidden"></div>
-            <input id="brother-sim" type="text" placeholder="Número CIM" autocomplete="off"
-                class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                onblur="fetchBrotherData()">
+                <div class="flex items-center mt-4">
+                    <input id="brother-sim" type="text" placeholder="Número CIM" autocomplete="off"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                        onblur="fetchBrotherData()">
+                    <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">Pesquisar</button>
+                </div>
             <div id="brotherInfo" class="mt-4">
                 <p id="brotherName" class="text-gray-700 font-semibold"></p>
                 <p id="brotherPosition" class="text-gray-500"></p>

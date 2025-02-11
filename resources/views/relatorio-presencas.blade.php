@@ -88,101 +88,92 @@
         </section>
 
         <!-- Tabela de Relatório -->
-        <section class="bg-gray-800 shadow-md rounded-lg p-6">
+                <section class="bg-gray-800 shadow-md rounded-lg p-6">
             <h2 class="text-lg font-semibold mb-4">Resultados</h2>
-            <table class="w-full border-collapse border border-gray-700 text-gray-100">
-                <!-- <thead>
-                    <tr class="bg-gray-700">
-                        <th class="border p-2">CIM</th>
-                        <th class="border p-2">Nome</th>
-                        <th class="border p-2">Cargo</th>
-                        <th class="border p-2">Tipo de Usuário</th>
-                        <th class="border p-2">Data</th>
-                    </tr>
-                </thead> -->
-                <thead>
-                    <tr>
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'sim', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                            CIM
-                                @if(request('sort_by') === 'sim')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'name', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Nome
-                                @if(request('sort_by') === 'name')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'position', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Cargo
-                                @if(request('sort_by') === 'position')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Loja
-                                @if(request('sort_by') === 'loja')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'numero_da_loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Número da Loja
-                                @if(request('sort_by') === 'numero_da_loja')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-
-
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'user_type', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Tipo de Usuário
-                                @if(request('sort_by') === 'user_type')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-                        <th class="border p-2">
-                            <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'date', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
-                                Data
-                                @if(request('sort_by') === 'date')
-                                    <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
-                                @endif
-                            </a>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($transformedData as $data)
-                        <tr class="text-center">
-                            <td class="border p-2">{{ $data['sim'] }}</td>
-                            <td class="border p-2">{{ $data['name'] }}</td>
-                            <td class="border p-2">{{ $data['position'] }}</td>
-                            <td class="border p-2">{{ $data['loja'] }}</td>
-                            <td class="border p-2">{{ $data['numero_da_loja'] }}</td>
-                            <td class="border p-2">{{ $data['user_type'] }}</td>
-                            <td class="border p-2">{{ $data['date'] }}</td>
-                        </tr>
-                    @empty
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-700 text-gray-100">
+                    <thead>
                         <tr>
-                            <td colspan="5" class="border p-4 text-center text-gray-500">
-                                Nenhum dado encontrado.
-                            </td>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'sim', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                CIM
+                                    @if(request('sort_by') === 'sim')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'name', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Nome
+                                    @if(request('sort_by') === 'name')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'position', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Cargo
+                                    @if(request('sort_by') === 'position')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Loja
+                                    @if(request('sort_by') === 'loja')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'numero_da_loja', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Número da Loja
+                                    @if(request('sort_by') === 'numero_da_loja')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'user_type', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Tipo de Usuário
+                                    @if(request('sort_by') === 'user_type')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="border p-2">
+                                <a href="{{ route('presence.report', array_merge(request()->all(), ['sort_by' => 'date', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc'])) }}">
+                                    Data
+                                    @if(request('sort_by') === 'date')
+                                        <span>{{ request('sort_direction') === 'asc' ? '🔼' : '🔽' }}</span>
+                                    @endif
+                                </a>
+                            </th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse ($transformedData as $data)
+                            <tr class="text-center">
+                                <td class="border p-2">{{ $data['sim'] }}</td>
+                                <td class="border p-2">{{ $data['name'] }}</td>
+                                <td class="border p-2">{{ $data['position'] }}</td>
+                                <td class="border p-2">{{ $data['loja'] }}</td>
+                                <td class="border p-2">{{ $data['numero_da_loja'] }}</td>
+                                <td class="border p-2">{{ $data['user_type'] }}</td>
+                                <td class="border p-2">{{ $data['date'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="border p-4 text-center text-gray-500">
+                                    Nenhum dado encontrado.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
             <!-- Paginação -->
             <div class="mt-4 flex justify-between items-center">
