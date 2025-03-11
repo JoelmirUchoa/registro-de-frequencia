@@ -4,13 +4,11 @@
         <div class="p-8 space-y-6 bg-gray-700 bg-opacity-50 rounded-lg shadow-md w-full sm:w-96">
             <h2 class="text-2xl font-bold text-center text-gray-100">Registrar Presença</h2>
             <div class="space-y-4">
-                <!-- Botão Irmão do Quadro -->
                 <button onclick="openPopup('brother')"
                     class="w-full px-8 py-6 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none mb-6 text-xl font-bold">
                     Irmão do Quadro
                 </button>
                 
-                <!-- Botão Visitante -->
                 <button onclick="window.location.href='{{ route('visitor-page') }}'"
                     class="w-full px-8 py-6 text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:outline-none text-xl font-bold">
                     Irmão Visitante
@@ -18,11 +16,11 @@
             </div>
         </div>
     </div>
-    <!-- <div class="flex items-center justify-center">
-        <a href="{{ route('presence.report')}}" class="mt-4 text-white">Acesso do Chanceler</a>
-    </div> -->
+
     <div class="flex items-center justify-center">
-        <a href="#" onclick="document.getElementById('login-popup').classList.remove('hidden');" class=" font-bold mt-4 text-white bg-gray-800 bg-opacity-50">Acesso do Chanceler</a>
+        <a href="#" onclick="document.getElementById('login-popup').classList.remove('hidden');" 
+           class="font-bold mt-4 text-white bg-gray-800 bg-opacity-50">Acesso do Chanceler</a>
+
     </div>
     <!-- Pop-up de Login -->
     <div id="login-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -51,133 +49,100 @@
             </form>
         </div>
     </div>
+    
 
-    <!-- Pop-up para Irmão do Quadro -->
+    <!-- Pop-up para Registrar Presença -->
     <div id="brother-popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número CIM</h3>
-            <div id="messageContainer" class="hidden"></div>
-                <div class="flex items-center mt-4">
-                    <input id="brother-sim" type="text" placeholder="Número CIM" autocomplete="off"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                        onblur="fetchBrotherData()">
-                    <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">Pesquisar</button>
-                </div>
-            <div id="brotherInfo" class="mt-4">
-                <p id="brotherName" class="text-gray-700 font-semibold"></p>
-                <p id="brotherPosition" class="text-gray-500"></p>
-                <p id="brotherLoja" class="text-gray-500"></p>
-                <p id="brotherNumeroLoja" class="text-gray-500"></p>
+            <div class="flex items-center mt-4">
+                <input id="brother-sim" type="text" placeholder="Número CIM" autocomplete="off"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                    onblur="fetchBrotherData()">
+                <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">Pesquisar</button>
+            </div>
+            <div id="brotherInfo" class="mt-4 text-gray-700">
+                <p id="brotherName"></p>
+                <p id="brotherPosition"></p>
+                <p id="brotherLoja"></p>
+                <p id="brotherNumeroLoja"></p>
             </div>
             <div class="mt-4 flex justify-end space-x-4">
-                <button onclick="window.location.href='{{ route('select-user') }}'"
-                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                <button onclick="closePopup('brother')" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
                     Cancelar
                 </button>
-                <button onclick="registerBrotherPresence('')"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+                <button onclick="registerBrotherPresence()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
                     Registrar Presença
                 </button>
             </div>
         </div>
     </div>
 
-    <script>
-    // Função para exibir mensagens
-    function showMessage(message) {
-        const messageContainer = document.getElementById('messageContainer');
-        messageContainer.textContent = message;
-        messageContainer.classList.remove('hidden');
-        
-        // Esconde a mensagem após 5 segundos
-        setTimeout(() => {
-            messageContainer.classList.add('hidden');
-        }, 5000);
-    }
+    <!-- Modal de Mensagem -->
+    <div id="message-modal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-blue-600 text-white p-6 rounded-lg shadow-lg w-96 text-center">
+            <h3 id="modal-title" class="text-2xl font-extrabold uppercase"></h3>
+            <p id="modal-message" class="mt-2 text-xl font-bold"></p>
+        </div>
+    </div>
 
-    // Função para abrir o pop-up
+    <script>
     function openPopup(type) {
         document.getElementById(`${type}-popup`).classList.remove('hidden');
-        clearMessages(type); // Limpa as mensagens ao abrir o pop-up
     }
 
-    // Função para fechar o pop-up
-    // function closePopup(type) {
-    //     clearFields(type); // Limpa os campos ao fechar o pop-up
-    //     document.getElementById(`${type}-popup`).classList.add('hidden');
-    // }
     function closePopup(type) {
-    const popup = document.getElementById(`${type}-popup`);
-    if (popup) {
-        popup.classList.add('hidden');
+        document.getElementById(`${type}-popup`).classList.add('hidden');
+        clearFields(type);
     }
-    clearFields(type);
-}
 
-    // Limpa os campos de entrada e dados exibidos
     function clearFields(type) {
-        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número CIM
-
         if (type === "brother") {
-            document.getElementById("brotherName").textContent = "";
-            document.getElementById("brotherPosition").textContent = "";
-        }
-    }
-
-    // Limpa as mensagens exibidas
-    function clearMessages(type) {
-        if (type === "brother") {
+            document.getElementById('brother-sim').value = "";
             document.getElementById('brotherName').textContent = "";
             document.getElementById('brotherPosition').textContent = "";
+            document.getElementById('brotherLoja').textContent = "";
+            document.getElementById('brotherNumeroLoja').textContent = "";
         }
     }
 
-    // Enviar requisição POST com dados
     async function sendPostRequest(url, data) {
         try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify(data)
             });
             return await response.json();
         } catch (error) {
-            if (error instanceof TypeError) {
-                showMessage('Erro de rede. Verifique sua conexão.');
-            } else {
-                showMessage('Ocorreu um erro inesperado.');
-            }
+            return { success: false, message: 'Erro na comunicação com o servidor.' };
         }
     }
 
-     // Função para exibir mensagens de confirmação
-     function showConfirmationMessage(message) {
-        const confirmationContainer = document.createElement('div');
-        confirmationContainer.textContent = message;
-        confirmationContainer.style.position = 'fixed';
-        confirmationContainer.style.top = '20px';
-        confirmationContainer.style.right = '20px';
-        confirmationContainer.style.backgroundColor = '#28a745';
-        confirmationContainer.style.color = 'white';
-        confirmationContainer.style.padding = '10px 20px';
-        confirmationContainer.style.borderRadius = '5px';
-        confirmationContainer.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
-        confirmationContainer.style.zIndex = '1000';
+    function showModalMessage(title, message, success = true) {
+        const modal = document.getElementById('message-modal');
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-message').textContent = message;
+        modal.classList.remove('hidden');
 
-        document.body.appendChild(confirmationContainer);
-
-        // Remove a mensagem após 3 segundos
         setTimeout(() => {
-            document.body.removeChild(confirmationContainer);
+            modal.classList.add('hidden');
+            if (success) {
+                window.location.href = "{{ route('select-user') }}";
+            }
         }, 3000);
     }
 
-    // Registrar presença (para irmãos)
     function registerBrotherPresence() {
-        const sim = document.querySelector('#brother-sim').value; // Campo de CIM do irmão
+        const sim = document.getElementById('brother-sim').value;
+
+        if (!sim) {
+            showModalMessage("Erro", "Por favor, insira o número CIM.", false);
+            return;
+        }
 
         fetch('/brother/register-presence', {
             method: 'POST',
@@ -185,64 +150,26 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ sim: sim })
+            body: JSON.stringify({ sim })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Exibe a mensagem de confirmação
-                showConfirmationMessage(data.message);
-
-                // Fecha o pop-up
-                closePopup('brother');
+                showModalMessage("Sucesso!", "Presença registrada com sucesso.");
             } else {
-                showMessage('Erro: ' + data.message);
+                showModalMessage("Erro", data.message, false);
             }
         })
-        .catch(error => {
-            console.error('Erro na requisição:', error);
-            showMessage('Erro na comunicação com o servidor.');
+        .catch(() => {
+            showModalMessage("Erro", "Erro na comunicação com o servidor.", false);
         });
     }
 
-    // Função para fechar o pop-up
-    function closePopup(type) {
-        const popup = document.getElementById(`${type}-popup`);
-        if (popup) {
-            popup.classList.add('hidden');
-        }
-        clearFields(type);
-    }
-
-    // Limpa os campos de entrada e dados exibidos
-    function clearFields(type) {
-        document.getElementById(`${type}SimInput`).value = ""; // Limpa o campo do número CIM
-
-        if (type === "brother") {
-            document.getElementById("brotherName").textContent = "";
-            document.getElementById("brotherPosition").textContent = "";
-        }
-    }
-
-    // Função para exibir mensagens de erro ou informações
-    function showMessage(message) {
-        const messageContainer = document.getElementById('messageContainer');
-        messageContainer.textContent = message;
-        messageContainer.classList.remove('hidden');
-        
-        // Esconde a mensagem após 5 segundos
-        setTimeout(() => {
-            messageContainer.classList.add('hidden');
-        }, 5000);
-    }
-
-
-    // Buscar dados do irmão do quadro
     async function fetchBrotherData() {
         const sim = document.getElementById('brother-sim').value;
 
         if (!sim) {
-            showMessage('Por favor, insira o número CIM.');
+            showModalMessage("Aviso", "Por favor, insira o número CIM.", false);
             return;
         }
 
@@ -258,62 +185,11 @@
             }
         } else {
             if (result.type === 'visitor') {
-                showMessage(`Aviso: Este CIM já está cadastrado como visitante. Nome: ${result.data.name}`);
+                showModalMessage("Aviso", `Este CIM já está cadastrado como visitante.`, false);
             } else {
-                showMessage(result.message);
+                showModalMessage("Erro", result.message, false);
             }
         }
     }
-
-    //<visitante>
-    // Verificar se o visitante já está registrado
-    async function verifyVisitor() {
-        const sim = document.getElementById('visitorSimInput').value;
-
-        if (!sim) {
-            showMessage('Por favor, insira o número CIM.');
-            return;
-        }
-
-        const result = await sendPostRequest('/verify-visitor', { sim });
-
-        if (result.success) {
-            showMessage('Visitante encontrado! Exibindo dados...');
-            closePopup('visitor');
-        } else {
-            showMessage('Visitante não cadastrado. Use a opção "Cadastrar Visitante".');
-        }
-    }
-
-    // Cadastrar novo visitante
-    async function registerVisitor(event) {
-        event.preventDefault();
-        const formData = new FormData(document.getElementById('registerForm'));
-        const name = formData.get('name');
-        const sim = formData.get('sim');
-
-        if (!name || !sim) {
-            showMessage('Preencha todos os campos.');
-            return;
-        }
-
-        const result = await sendPostRequest('/register-visitor', { name, sim });
-
-        if (result.success) {
-            showMessage(`Visitante ${name} com CIM ${sim} cadastrado com sucesso!`);
-            closePopup('register');
-        } else {
-            showMessage('Erro ao cadastrar visitante.');
-        }
-    }
-
-    // Buscar dados ao pressionar Enter
-    document.getElementById('brother-sim').addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            fetchBrotherData();
-        }
-    });
-    //</visitante>
-</script>
-
+    </script>
 </x-guest-layout>
