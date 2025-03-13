@@ -4,12 +4,12 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 class="text-lg font-bold text-gray-700">Digite o número CIM do Visitante</h3>
             <div id="visitorMessageContainer" class="hidden bg-blue-100 text-blue-800 px-4 py-2 rounded"></div>
-                <div class="flex items-center mt-4">
-                    <input id="visitor-sim" type="text" placeholder="Número CIM" autocomplete="off"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                        onkeydown="handleEnterKey(event)" onblur="verifyVisitor()">
-                    <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">Pesquisar</button>
-                </div>
+            <div class="flex items-center mt-4">
+                <input id="visitor-sim" type="text" placeholder="Número CIM" autocomplete="off"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                    onkeydown="handleEnterKey(event)" onblur="verifyVisitor()">
+                <button class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500" onclick="verifyVisitor()">Pesquisar</button>
+            </div>
             <div id="visitorInfo" class="mt-4 hidden">
                 <p id="visitorName" class="text-gray-700 font-semibold"></p>
             </div>
@@ -27,7 +27,6 @@
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
                     Registrar Presença
                 </button>
-
             </div>
         </div>
     </div>
@@ -38,16 +37,30 @@
             <h3 class="text-lg font-bold text-gray-700">Registrar Novo Visitante</h3>
             <div id="error-message" class="hidden text-red-500 text-sm mb-4"></div>
             <form id="registerForm" onsubmit="registerVisitor(event)" novalidate>
-                <input type="text" name="name" placeholder="Nome do Visitante" required
+                <input type="text" name="name" placeholder="Nome do Visitante" autocomplete="off" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
-                <input type="text" name="sim" placeholder="Número CIM" required
+                <p id="error-name" class="text-red-500 text-sm mt-1 hidden">Campo obrigatório.</p>
+
+                <input type="text" name="sim" placeholder="Número CIM" autocomplete="off" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
-                <input type="text" name="position" placeholder="Cargo do Visitante" required
+                <p id="error-sim" class="text-red-500 text-sm mt-1 hidden">Campo obrigatório.</p>
+
+                <select name="position" id="position" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
-                <input type="text" name="loja" placeholder="Loja" required
+                    <option value="">Selecione um Cargo</option>
+                </select>
+                <p id="error-position" class="text-red-500 text-sm mt-1 hidden">Campo obrigatório.</p>
+
+                <select name="loja" id="loja" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
-                <input type="text" name="numero_da_loja" placeholder="Número da Loja" required
+                    <option value="">Selecione uma Loja</option>
+                </select>
+                <p id="error-loja" class="text-red-500 text-sm mt-1 hidden">Campo obrigatório.</p>
+
+                <input type="text" name="numero_da_loja" placeholder="Número da Loja" autocomplete="off" required
                     class="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-purple-300 focus:outline-none">
+                <p id="error-numero_da_loja" class="text-red-500 text-sm mt-1 hidden">Campo obrigatório.</p>
+
                 <div class="mt-4 flex justify-end space-x-4">
                     <button type="button" onclick="closePopup('register-visitor')"
                         class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
@@ -85,6 +98,10 @@
                 document.getElementById('registerForm').reset();
                 document.getElementById('error-message').classList.add('hidden');
                 document.getElementById('error-message').textContent = '';
+                const inputs = document.querySelectorAll('#registerForm input, #registerForm select');
+                inputs.forEach(input => {
+                    input.classList.remove('border-red-500');
+                });
             }
         }
 
@@ -153,22 +170,64 @@
                     Número da Loja: ${result.data.numero_da_loja}
                 `;
                 visitorInfo.classList.remove('hidden');
-            } else if (result.message === 'O número CIM informado já está cadastrado como irmão.') {
-                showModalMessage("Erro", result.message, false);
             } else {
-                showModalMessage("Aviso", result.message || 'Visitante não encontrado.', false);
+                showModalMessage("Erro", result.message || 'Visitante não encontrado.', false);
                 registerNewVisitor.classList.remove('hidden');
             }
         }
 
+        async function fetchVisitorData() {
+            const sim = document.querySelector('input[name="sim"]').value.trim();
+            if (!sim) {
+                return;
+            }
+
+            const result = await sendPostRequest('/fetch-visitor-data', { sim });
+
+            if (result.success) {
+                document.querySelector('input[name="position"]').value = result.data.position;
+                document.querySelector('input[name="loja"]').value = result.data.loja;
+                document.querySelector('input[name="numero_da_loja"]').value = result.data.numero_da_loja;
+            } else {
+                showModalMessage("Erro", result.message, false);
+            }
+        }
+
+        function validateFields(formId) {
+            let isValid = true;
+            const form = document.getElementById(formId);
+            const inputs = form.querySelectorAll("input[required], select[required]");
+
+            inputs.forEach(input => {
+                const errorElement = document.getElementById(`error-${input.name}`);
+                
+                if (!input.value.trim()) {
+                    input.classList.add("border-red-500");
+                    if (errorElement) {
+                        errorElement.classList.remove("hidden");
+                    }
+                    isValid = false;
+                } else {
+                    input.classList.remove("border-red-500");
+                    if (errorElement) {
+                        errorElement.classList.add("hidden");
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
         async function registerVisitor(event) {
             event.preventDefault();
-            const formData = new FormData(document.getElementById('registerForm'));
-            const data = Object.fromEntries(formData.entries());
 
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.classList.add('hidden');
-            errorMessage.textContent = '';
+            if (!validateFields('registerForm')) {
+                return;
+            }
+
+            const form = document.getElementById('registerForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
 
             try {
                 const response = await fetch('/register-visitor', {
@@ -181,26 +240,19 @@
                     body: JSON.stringify(data),
                 });
 
+                const result = await response.json();
+
                 if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        closePopup('register-visitor');
-                        document.getElementById('registerForm').reset();
-                        showModalMessage("Sucesso!", "Visitante registrado com sucesso.");
-                    }
+                    closePopup('register-visitor');
+                    form.reset();
+                    showModalMessage("Sucesso!", "Visitante registrado com sucesso.");
                 } else if (response.status === 422) {
-                    const result = await response.json();
-                    if (result.message) {
-                        errorMessage.textContent = result.message;
-                        errorMessage.classList.remove('hidden');
-                    }
+                    showModalMessage("Erro", result.message || "Erro ao registrar visitante.", false);
                 } else {
-                    errorMessage.textContent = 'Erro desconhecido ao registrar visitante.';
-                    errorMessage.classList.remove('hidden');
+                    showModalMessage("Erro", "Erro desconhecido ao registrar visitante.", false);
                 }
             } catch (error) {
-                errorMessage.textContent = 'Erro ao conectar ao servidor.';
-                errorMessage.classList.remove('hidden');
+                showModalMessage("Erro", "Erro ao conectar ao servidor.", false);
             }
         }
 
@@ -210,5 +262,44 @@
                 event.preventDefault();
             }
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/existing-data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const positionSelect = document.getElementById("position");
+                        const lojaSelect = document.getElementById("loja");
+
+                        // Adiciona opções de cargos
+                        data.positions.forEach(position => {
+                            let option = document.createElement("option");
+                            option.value = position;
+                            option.textContent = position;
+                            positionSelect.appendChild(option);
+                        });
+
+                        // Adiciona opções de lojas
+                        data.lojas.forEach(loja => {
+                            let option = document.createElement("option");
+                            option.value = loja;
+                            option.textContent = loja;
+                            lojaSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => console.error("Erro ao carregar dados:", error));
+        });
+
+        // Remove borda vermelha ao digitar
+        document.addEventListener("input", function (event) {
+            if (event.target.matches("input, select")) {
+                event.target.classList.remove("border-red-500");
+                const errorElement = document.getElementById(`error-${event.target.name}`);
+                if (errorElement) {
+                    errorElement.classList.add("hidden");
+                }
+            }
+        });
     </script>
 </x-guest-layout>

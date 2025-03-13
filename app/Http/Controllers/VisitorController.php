@@ -6,9 +6,42 @@ use App\Models\Visitor;
 use App\Models\Brother;
 use Illuminate\Http\Request;
 use App\Models\Presence;
+use Carbon\Carbon;
 
 class VisitorController extends Controller
 {
+
+    public function getExistingData()
+    {
+        // Buscar todos os cargos de visitantes e irmãos
+        $positions = Visitor::pluck('position')->merge(Brother::pluck('position'))->unique()->values();
+
+        // Buscar todas as lojas de visitantes e irmãos
+        $lojas = Visitor::pluck('loja')->merge(Brother::pluck('loja'))->unique()->values();
+
+        return response()->json([
+            'success' => true,
+            'positions' => $positions,
+            'lojas' => $lojas,
+        ]);
+    }
+
+    // Método para exibir o formulário de registro de visitantes
+    public function showVisitorForm()
+    {
+        // Obter os cargos distintos de brothers e visitors
+        $brotherPositions = Brother::select('position')->distinct()->pluck('position')->toArray();
+        $visitorPositions = Visitor::select('position')->distinct()->pluck('position')->toArray();
+        $positions = array_unique(array_merge($brotherPositions, $visitorPositions));
+
+        // Obter as lojas distintas de brothers e visitors
+        $brotherLojas = Brother::select('loja')->distinct()->pluck('loja')->toArray();
+        $visitorLojas = Visitor::select('loja')->distinct()->pluck('loja')->toArray();
+        $lojas = array_unique(array_merge($brotherLojas, $visitorLojas));
+
+        return view('visitor-form', compact('positions', 'lojas'));
+    }
+    
     // Método para registrar um novo visitante
     public function register(Request $request)
     {
@@ -63,11 +96,11 @@ class VisitorController extends Controller
 
     // Método para verificar se um visitante existe
     public function verify(Request $request)
-{
-    $sim = $request->input('sim');
+    {
+        $sim = $request->input('sim');
 
-    // Verifica se o CIM pertence a um irmão
-    $brother = Brother::where('sim', $sim)->first();
+        // Verifica se o CIM pertence a um irmão
+        $brother = Brother::where('sim', $sim)->first();
         if ($brother) {
             return response()->json([
                 'success' => false,
@@ -89,7 +122,6 @@ class VisitorController extends Controller
     }
 
     // Método para registrar presença de um visitante
-    //public function registerPresence(Request $request)
     public function registerVisitorPresence(Request $request)
     {
         $sim = $request->input('sim');
@@ -118,7 +150,7 @@ class VisitorController extends Controller
             Presence::create([
                 'user_type' => 'visitor',   // Tipo será "visitor" neste contexto
                 'user_id' => $visitor->id, // ID do visitante
-                'date' => now(),           // Data atual
+                'date' => Carbon::now()->format('Y-m-d H:i:s'),   // Data atual formatada
             ]);
     
             return response()->json([
