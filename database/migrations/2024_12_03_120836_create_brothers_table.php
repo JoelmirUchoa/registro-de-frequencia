@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('sim')->unique(); // Número CIM único
             $table->string('name');          // Nome do irmão
             $table->string('position');      // Cargo do irmão
-            $table->timestamps();            // Campos created_at e updated_at
+            $table->string('loja')->nullable();
+            $table->string('numero_da_loja')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Visitor;
 use App\Models\Brother;
+use App\Models\Loja;
+use App\Models\Cargo;
 use Illuminate\Http\Request;
 use App\Models\Presence;
 use Carbon\Carbon;
@@ -13,12 +15,18 @@ class VisitorController extends Controller
 
     public function getExistingData()
     {
-        // Buscar todos os cargos de visitantes e irmãos
-        $positions = Visitor::pluck('position')->merge(Brother::pluck('position'))->unique()->values();
-
-        // Buscar todas as lojas de visitantes e irmãos
-        $lojas = Visitor::pluck('loja')->merge(Brother::pluck('loja'))->unique()->values();
-
+        // Buscar cargos de visitantes, irmãos e tabela de cargos
+        $positions = Visitor::pluck('position')
+            ->merge(Brother::pluck('position'))
+            ->merge(Cargo::pluck('nome'))
+            ->unique()->values();
+    
+        // Buscar lojas de visitantes, irmãos e tabela de lojas
+        $lojas = Visitor::pluck('loja')
+            ->merge(Brother::pluck('loja'))
+            ->merge(Loja::pluck('nome'))
+            ->unique()->values();
+    
         return response()->json([
             'success' => true,
             'positions' => $positions,
@@ -39,7 +47,13 @@ class VisitorController extends Controller
         $visitorLojas = Visitor::select('loja')->distinct()->pluck('loja')->toArray();
         $lojas = array_unique(array_merge($brotherLojas, $visitorLojas));
 
-        return view('visitor-form', compact('positions', 'lojas'));
+        // Obter os cargos
+        $cargos = Cargo::all();
+
+        // Obter as lojas
+        $lojas = Loja::all();
+
+        return view('visitor-form', compact('positions', 'lojas', 'cargos'));
     }
     
     // Método para registrar um novo visitante
@@ -150,6 +164,8 @@ class VisitorController extends Controller
             Presence::create([
                 'user_type' => 'visitor',   // Tipo será "visitor" neste contexto
                 'user_id' => $visitor->id, // ID do visitante
+                'name' => $visitor->name, // Adicionando o nome do visitante
+                'loja' => $visitor->loja, // Adicionando a loja (se necessário)
                 'date' => Carbon::now()->format('Y-m-d H:i:s'),   // Data atual formatada
             ]);
     

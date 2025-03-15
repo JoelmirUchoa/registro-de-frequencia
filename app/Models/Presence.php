@@ -11,7 +11,7 @@ class Presence extends Model
 
     //protected $table = 'presences';
     
-    protected $fillable = ['user_type', 'user_id', 'created_at', 'updated_at', 'date'];
+    protected $fillable = ['user_type', 'user_id', 'name', 'loja', 'date', 'created_at', 'updated_at'];
 
     // Relacionamento polimórfico
     public function user()

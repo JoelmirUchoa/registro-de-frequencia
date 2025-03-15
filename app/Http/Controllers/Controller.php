@@ -69,6 +69,8 @@ class Controller extends \Illuminate\Routing\Controller
                 Presence::create([
                     'user_type' => 'brother',   // Tipo sempre será "brother" neste contexto
                     'user_id' => $brother->id, // ID do irmão
+                    'name' => $brother->name,  // Adicionando o nome do irmão
+                    'loja' => $brother->loja,  // Adicionando a loja (se necessário)
                     'date' => now(),           // Data atual
                 ]);
 

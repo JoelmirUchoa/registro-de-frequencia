@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('sim')->unique(); // Número CIM único
             $table->string('name');          // Nome do visitante
-            $table->timestamps();            // Campos created_at e updated_at
+            $table->string('position')->nullable(); // Cargo do visitante
+            $table->string('loja')->nullable();
+            $table->string('numero_da_loja')->nullable();
+            $table->timestamps();
         });
     }
 

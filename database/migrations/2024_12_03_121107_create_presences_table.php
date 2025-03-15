@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('presences', function (Blueprint $table) {
             $table->id();
-            $table->string('user_type');         // 'brother' ou 'visitor'
+            $table->string('user_type'); // 'brother' ou 'visitor'
             $table->unsignedBigInteger('user_id'); // Relacionamento com 'brothers' ou 'visitors'
-            $table->timestamps();               // Campos created_at e updated_at
+            $table->string('name'); // Nome do usuário
+            $table->string('loja')->nullable(); // Nome ou número da loja
+            $table->timestamp('date')->nullable(); // Data da presença
+            $table->timestamps();
         });
     }
 

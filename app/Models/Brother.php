@@ -13,11 +13,6 @@ class Brother extends Model
     protected $table = 'brothers';
 
     // Definindo quais campos podem ser preenchidos (evitar Mass Assignment)
-    protected $fillable = [
-        'sim', 
-        'name', 
-        'position',
-        'loja',
-        'numero_da_loja',
-    ];
+    protected $fillable = ['user_type', 'user_id', 'name', 'loja', 'date', 'created_at', 'updated_at'];
+
 }
