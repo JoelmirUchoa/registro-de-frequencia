@@ -31,8 +31,8 @@
         }
 
         .card {
-            width: 8.5cm; /* Largura padrão para caber na A4 */
-            height: 5.5cm; /* Altura padrão para caber na A4 */
+            width: 99mm; /* Largura do cartão */ /* Largura padrão para caber na A4 */
+            eight: 55.8mm; /* Altura do cartão */ /* Altura padrão para caber na A4 */
             background-color: #ffffff;
             border: 1px solid #000;
             border-radius: 8px;

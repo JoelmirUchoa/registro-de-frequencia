@@ -246,7 +246,9 @@ class ReportController extends Controller
                 DB::raw('COALESCE(brothers.loja, visitors.loja) as loja'),
                 DB::raw('COALESCE(brothers.numero_da_loja, visitors.numero_da_loja) as numero_da_loja')
             )
-            ->whereDate('presences.created_at', now()->toDateString())
+            // ->whereDate('presences.created_at', now()->toDateString())
+            ->whereDate('presences.created_at', request('date'))
+
             ->get()
             ->map(function ($presence) {
                 $presence->created_at = Carbon::parse($presence->created_at);
